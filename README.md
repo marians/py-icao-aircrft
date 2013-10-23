@@ -1,7 +1,7 @@
 py-icao-aircrft
 ===============
 
-Python client for lookup of ICAO aircraft (Doc 8643) information
+Python client for lookup of ICAO aircraft ([Doc 8643](http://www.icao.int/publications/DOC8643/Pages/default.aspx)) information, also known as "Aircraft Type Designators".
 
 ## Install
 
