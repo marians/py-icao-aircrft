@@ -17,9 +17,9 @@ Example for use via the command line:
 
 Example code for use as a library:
 
-    >>> import icao-aircrft
+    >>> import icaoaircrft
     >>> query = 'PAY3'
-    >>> for result in icao-aircrft.lookup(type_code=query):
+    >>> for result in icaoaircrft.lookup(type_code=query):
     >>>     print result
     {'description': 'Landplane', 'wake_category': 'L', 'photo': None, 'type_code': 'PAY3', 'engine_count': 2, 'model': 'PA-42-720 Cheyenne 3', 'engine_type': 'Turboprop', 'manufacturer': 'AICSA'}
 	{'description': 'Landplane', 'wake_category': 'L', 'photo': None, 'type_code': 'PAY3', 'engine_count': 2, 'model': 'Cheyenne 3', 'engine_type': 'Turboprop', 'manufacturer': 'AICSA'}
