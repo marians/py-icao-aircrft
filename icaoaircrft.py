@@ -5,6 +5,7 @@ import pickle
 import requests
 from lxml import etree
 from io import StringIO
+from time import sleep
 
 
 label_mapping = {
@@ -23,7 +24,7 @@ cache_path = 'icaoaircrft_cache'
 
 def lookup(type_code='', manufacturer='', model='',
         description='', engine_count='', engine_type='',
-        wake_category=''):
+        wake_category='', delay=0):
 
     if type_code is None:
         raise ValueError('type_code must not be None.')
@@ -50,6 +51,7 @@ def lookup(type_code='', manufacturer='', model='',
         'Button': 'Search'
     }
     url = 'http://cfapp.icao.int/Doc8643/8643_List1.cfm'
+    sleep(delay)
     r = requests.post(url, headers=headers, data=payload)
     parser = etree.HTMLParser()
     tree = etree.parse(StringIO(r.text), parser)
@@ -87,6 +89,8 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Lookup ICAO aicraft data')
     parser.add_argument('-t', '--type', dest='type',
                    help='Type designator, e.g. "A319"')
+    parser.add_argument('-d', '--delay', dest='delay', default="0",
+                   help='Add a delay to prevent server hammering. Useful for multiple requests.')
     args = parser.parse_args()
-    for item in lookup(type_code=args.type):
+    for item in lookup(type_code=args.type, delay=int(args.delay)):
         print item
