@@ -4,6 +4,7 @@ import requests
 from lxml import etree
 from io import StringIO
 
+
 label_mapping = {
     'Manufacturer': 'manufacturer',
     'Model': 'model',
@@ -51,12 +52,17 @@ def lookup(type_code='', manufacturer='', model='',
             fieldcount = 0
             record = {}
             for td in row.xpath('td'):
-                val = td.text.strip()
-                if val in ['', '-']:
-                    val = None
-                record[fieldnames[fieldcount]] = val
+                if td.text is None:
+                    # Field has no text
+                    record[fieldnames[fieldcount]] = None
+                else:
+                    val = td.text.strip()
+                    if val in ['', '-']:
+                        val = None
+                    record[fieldnames[fieldcount]] = val
                 fieldcount += 1
-            record['engine_count'] = int(record['engine_count'])
+            if record['engine_count'] is not None:
+                record['engine_count'] = int(record['engine_count'])
             data.append(record)
         rowcount += 1
     return data
