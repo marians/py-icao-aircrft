@@ -25,3 +25,10 @@ Example code for use as a library:
 	{'description': 'Landplane', 'wake_category': 'L', 'photo': None, 'type_code': 'PAY3', 'engine_count': 2, 'model': 'Cheyenne 3', 'engine_type': 'Turboprop', 'manufacturer': 'AICSA'}
 	...
 
+## Notes
+
+The module does not contain the actual database. Instead it issues requests online to the icao.int server.
+
+The results of lookups are stored in a local cache file called icaoaircrft_cache.db within the current directory. This file can be deleted at any time to get rid of stale data.
+
+Due to the way the cache file is written, the module might not be thread-safe.

@@ -1,5 +1,7 @@
 # encoding: utf-8
 
+import anydbm
+import pickle
 import requests
 from lxml import etree
 from io import StringIO
@@ -16,10 +18,20 @@ label_mapping = {
     'Photo': 'photo'
 }
 
+cache_path = 'icaoaircrft_cache'
+
 
 def lookup(type_code='', manufacturer='', model='',
         description='', engine_count='', engine_type='',
         wake_category=''):
+
+    if type_code is None:
+        raise ValueError('type_code must not be None.')
+
+    cache = anydbm.open(cache_path, 'c')
+    if type_code in cache:
+        return pickle.loads(cache[type_code])
+
     headers = {
         'Referer': 'http://cfapp.icao.int/Doc8643/search.cfm',
         'Cache-control': 'no-cache',
@@ -65,6 +77,8 @@ def lookup(type_code='', manufacturer='', model='',
                 record['engine_count'] = int(record['engine_count'])
             data.append(record)
         rowcount += 1
+    cache[type_code] = pickle.dumps(data)
+    cache.close()
     return data
 
 
