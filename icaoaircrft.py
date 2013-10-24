@@ -6,6 +6,7 @@ import requests
 from lxml import etree
 from io import StringIO
 from time import sleep
+import re
 
 
 label_mapping = {
@@ -87,6 +88,12 @@ def lookup(type_code='', manufacturer='', model='',
                     if val in ['', '-']:
                         val = None
                     record[fieldnames[fieldcount]] = val
+                # photo
+                img = td.xpath('img')
+                if img is not None and len(img) > 0:
+                    onclick = img[0].get('onclick')
+                    uri = re.sub(r"^\.\.\/", 'http://cfapp.icao.int/', onclick.split('?')[1])
+                    record['photo'] = uri
                 fieldcount += 1
             try:
                 record['engine_count'] = int(record['engine_count'])
