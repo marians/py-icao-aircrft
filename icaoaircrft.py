@@ -22,6 +22,17 @@ label_mapping = {
 cache_path = 'icaoaircrft_cache'
 
 
+class HTTPException(Exception):
+    """Exception raised for errors in HTTP communication.
+
+    Attributes:
+        msg  -- explanation of the error
+    """
+
+    def __init__(self, msg):
+        self.msg = msg
+
+
 def lookup(type_code='', manufacturer='', model='',
         description='', engine_count='', engine_type='',
         wake_category='', delay=0):
@@ -53,6 +64,8 @@ def lookup(type_code='', manufacturer='', model='',
     url = 'http://cfapp.icao.int/Doc8643/8643_List1.cfm'
     sleep(delay)
     r = requests.post(url, headers=headers, data=payload)
+    if r.status_code != 200:
+        raise HTTPException('HTTP code %s returned' % r.status_code)
     parser = etree.HTMLParser()
     tree = etree.parse(StringIO(r.text), parser)
     rowcount = 0
@@ -75,8 +88,10 @@ def lookup(type_code='', manufacturer='', model='',
                         val = None
                     record[fieldnames[fieldcount]] = val
                 fieldcount += 1
-            if record['engine_count'] is not None:
+            try:
                 record['engine_count'] = int(record['engine_count'])
+            except:
+                pass
             data.append(record)
         rowcount += 1
     cache[type_code] = pickle.dumps(data)
